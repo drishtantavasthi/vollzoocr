@@ -13,7 +13,7 @@ const extractData = async (req, res) => {
     }
 
     const genAI = new GoogleGenerativeAI(API_KEY);
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
     const base64Data = req.file.buffer.toString("base64");
     const mimeType = req.file.mimetype;

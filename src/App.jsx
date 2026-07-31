@@ -1,60 +1,53 @@
-import { useState } from 'react'
-import Uploader from './components/Uploader'
-import DataForm from './components/DataForm'
-import SavedDataIndex from './components/SavedDataIndex'
-import { Toaster, toast } from 'react-hot-toast'
-import { DataController } from './controllers/DataController'
-import './App.css'
+import React, { useState } from 'react';
+import { AppProvider } from './context/AppContext';
+import Layout from './views/layout/Layout';
+import DashboardPage from './views/pages/DashboardPage';
+import UploadPage from './views/pages/UploadPage';
+import ReviewPage from './views/pages/ReviewPage';
+import SavedPage from './views/pages/SavedPage';
+import { ToastContainer } from './views/components/Toast';
 
 function App() {
-  const [extractedData, setExtractedData] = useState(null);
-  const [currentDownloadURL, setCurrentDownloadURL] = useState("");
-  const [savedDocuments, setSavedDocuments] = useState([]);
+  const [currentPath, setCurrentPath] = useState('/');
 
-  const handleExtractionSuccess = (data, downloadURL) => {
-    console.log("Uploaded PDF:", downloadURL);
-    console.log("Extracted Data:", data);
-    setExtractedData(data);
-    setCurrentDownloadURL(downloadURL);
+  const handleNavigate = (path) => {
+    setCurrentPath(path);
   };
 
-  const handleSaveData = async (finalData) => {
-    const newDoc = DataController.formatDocumentRecord(finalData, currentDownloadURL);
-    
-    const updatedRecords = await DataController.saveDocumentRecord(savedDocuments, newDoc);
-    setSavedDocuments(updatedRecords);
-    // Clear current form after saving
-    setExtractedData(null);
-    setCurrentDownloadURL("");
-    toast.success("Document saved to your library.");
+  const pageTitleMap = {
+    '/': 'Dashboard',
+    '/upload': 'Upload Documents',
+    '/review': 'Review Data',
+    '/saved': 'Saved Documents'
+  };
+
+  const renderPage = () => {
+    switch (currentPath) {
+      case '/':
+        return <DashboardPage onNavigate={handleNavigate} />;
+      case '/upload':
+        return <UploadPage onNavigate={handleNavigate} />;
+      case '/review':
+        return <ReviewPage onNavigate={handleNavigate} />;
+      case '/saved':
+        return <SavedPage onNavigate={handleNavigate} />;
+      default:
+        return <DashboardPage onNavigate={handleNavigate} />;
+    }
   };
 
   return (
-    <div className="min-h-screen py-10 px-4 sm:px-6 lg:px-8 w-full block">
-      <Toaster position="top-right" />
-      <div className="w-full max-w-full space-y-8">
-        <div className="text-center">
-          <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight sm:text-5xl">
-            Vollzo OCR
-          </h1>
-          <p className="mt-4 text-lg text-gray-500">
-            Upload your scanned PDFs to automatically extract data and fill out the form.
-          </p>
-        </div>
-
-        <div className="bg-white shadow-xl sm:rounded-lg p-6 space-y-8">
-          <Uploader onExtractionSuccess={handleExtractionSuccess} />
-          
-          {extractedData && (
-             <DataForm ExtractedData={extractedData} onSave={handleSaveData} />
-          )}
-        </div>
-        
-        {/* Render Saved Documents Library */}
-        <SavedDataIndex savedDocuments={savedDocuments} />
-      </div>
-    </div>
-  )
+    <AppProvider>
+      <ToastContainer />
+      <Layout 
+        currentPath={currentPath} 
+        onNavigate={handleNavigate} 
+        pageTitle={pageTitleMap[currentPath] || 'Vollzo OCR'}
+      >
+        {renderPage()}
+      </Layout>
+    </AppProvider>
+  );
 }
 
-export default App
+export default App;

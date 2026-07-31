@@ -1,56 +1,29 @@
-import { uploadFile } from "../firebase/storage";
-import { extractDataFromDocuments } from "../utils/ocr";
+import { OCRResult } from '../models/OCRResultModel';
+import { GeminiService } from '../services/GeminiService';
+import { FirebaseStorageService } from '../services/FirebaseStorageService';
 
-export class OCRController {
-  /**
-   * Validates if the selected files are valid PDFs.
-   * @param {File[]} files 
-   * @returns {File[]} valid files
-   */
-  static validatePDFFiles(files) {
-    return files.filter(f => f.type === "application/pdf");
-  }
-
-  /**
-   * Processes a batch of documents: uploads them securely to Firebase Storage,
-   * then routes them through Gemini OCR.
-   * 
-   * @param {File[]} files Array of selected files
-   * @param {string} instructions Custom instructions for Gemini
-   * @param {Object} callbacks UI feedback handlers: { onUploadStart, onOcrStart, onSuccess, onError }
-   */
-  static async processBatch(files, instructions, callbacks = {}) {
+export const OCRController = {
+  async processBatch(files, instructions = '') {
     try {
-      if (!files || files.length === 0) {
-        throw new Error("No files provided for processing.");
-      }
+      // Run Gemini extraction IMMEDIATELY — no waiting for upload
+      const extractedData = await GeminiService.extractDataFromDocuments(files, instructions);
 
-      if (callbacks.onUploadStart) callbacks.onUploadStart();
+      // Fire-and-forget: upload to Firebase in the background
+      // Don't block the user — if it fails (e.g. expired rules), extraction still works
+      let downloadURL = '';
+      Promise.all(
+        files.map(file => FirebaseStorageService.uploadFile(file, 'ocr_uploads'))
+      )
+        .then(urls => { downloadURL = urls.join(', '); })
+        .catch(err => console.warn('Firebase upload skipped:', err.message));
 
-      // 1. Upload to Firebase Storage
-      const uploadPromises = files.map((file) => 
-        uploadFile(file, `uploads/pdfs`, () => {
-          // Progress can be piped here if needed by the app
-        })
-      );
-      
-      const downloadURLs = await Promise.all(uploadPromises);
-      const downloadURLString = downloadURLs.join(", ");
-
-      if (callbacks.onOcrStart) callbacks.onOcrStart();
-
-      // 2. Extract Data collectively via Gemini API
-      const extractedData = await extractDataFromDocuments(files, instructions);
-
-      if (callbacks.onSuccess) {
-        callbacks.onSuccess(extractedData, downloadURLString);
-      }
-
-      return { extractedData, downloadURLString };
-
+      return new OCRResult({
+        extractedData,
+        downloadURL,
+        timestamp: new Date().toISOString()
+      });
     } catch (error) {
-      if (callbacks.onError) callbacks.onError(error);
-      throw error;
+      throw new Error(`OCR Processing Failed: ${error.message}`);
     }
   }
-}
+};
