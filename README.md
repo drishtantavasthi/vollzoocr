@@ -7,9 +7,7 @@
 ![Architecture](https://img.shields.shields.io/badge/Architecture-MVC-emerald)
 
 **Vollzo OCR** is an intelligent, high-performance document extraction platform built with React 19, Vite, and Google Gemini AI. It transforms scanned PDFs, receipts, invoices, and documents into structured, editable JSON data in seconds.
-
 ---
-
 ## ✨ Features
 
 - 📄 **Multi-Document Batch Processing**: Upload single or multiple PDF documents simultaneously.
@@ -19,7 +17,6 @@
 - 🎨 **Modern Dark Glassmorphism UI**: Beautiful, responsive dark-themed interface built with Tailwind CSS, custom animations, and glassmorphic panels.
 - 💾 **Local & Cloud Persistence**: Saves structured documents to browser local storage with seamless Firebase Storage integration for document previews.
 - ⚡ **Side-by-Side Review & Editing**: Edit extracted fields directly in interactive forms before saving.
-
 ---
 
 ## 🏛️ Model-View-Controller (MVC) Architecture
