@@ -10,15 +10,15 @@
 
 ---
 
-## ✨ Features
+##  Features
 
-- 📄 **Multi-Document Batch Processing**: Upload single or multiple PDF documents simultaneously.
-- 🧠 **AI-Powered OCR**: Leverages Google Gemini 2.0 Flash Vision AI to accurately extract key-value data.
-- 🎯 **Custom Extraction Instructions**: Instruct the AI engine to extract specific fields (e.g., *"Find total amount, vendor name, and line items"*).
-- 🏗️ **Clean MVC Architecture**: Modular separation of concerns into Models, Views, Controllers, Services, and Hooks.
-- 🎨 **Modern Dark Glassmorphism UI**: Beautiful, responsive dark-themed interface built with Tailwind CSS, custom animations, and glassmorphic panels.
-- 💾 **Local & Cloud Persistence**: Saves structured documents to browser local storage with seamless Firebase Storage integration for document previews.
-- ⚡ **Side-by-Side Review & Editing**: Edit extracted fields directly in interactive forms before saving.
+- **Multi-Document Batch Processing**: Upload single or multiple PDF documents simultaneously.
+- **AI-Powered OCR**: Leverages Google Gemini 2.0 Flash Vision AI to accurately extract key-value data.
+- **Custom Extraction Instructions**: Instruct the AI engine to extract specific fields (e.g., *"Find total amount, vendor name, and line items"*).
+   **Clean MVC Architecture**: Modular separation of concerns into Models, Views, Controllers, Services, and Hooks.
+   **Modern Dark Glassmorphism UI**: Beautiful, responsive dark-themed interface built with Tailwind CSS, custom animations, and glassmorphic panels.
+- **Local & Cloud Persistence**: Saves structured documents to browser local storage with seamless Firebase Storage integration for document previews.
+-  **Side-by-Side Review & Editing**: Edit extracted fields directly in interactive forms before saving.
 
 ---
 
@@ -71,7 +71,7 @@ src/
 
 ---
 
-## 🚀 Quick Start
+##  Quick Start
 
 ### 1. Prerequisites
 - Node.js (v18 or higher recommended)
@@ -112,7 +112,7 @@ Open [http://localhost:5173](http://localhost:5173) in your browser to view the 
 
 ---
 
-## 📦 Build for Production
+##  Build for Production
 
 ```bash
 npm run build
