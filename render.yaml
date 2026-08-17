@@ -1,0 +1,26 @@
+services:
+  - type: web
+    runtime: node
+    name: vollzoocr-backend
+    plan: free
+    buildCommand: npm ci
+    startCommand: node backend/server.js
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: GEMINI_API_KEY
+        sync: false
+
+  - type: web
+    runtime: static
+    name: vollzoocr-frontend
+    buildCommand: npm ci && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_URL
+        sync: false
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
